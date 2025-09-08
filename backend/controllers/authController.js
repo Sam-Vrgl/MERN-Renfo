@@ -36,12 +36,13 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email, isDeleted: false });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       res.status(200).json({
         token: generateToken(user._id),
         userId: user._id,
+        role: user.role,
       });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });

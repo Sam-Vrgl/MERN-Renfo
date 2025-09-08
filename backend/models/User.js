@@ -16,13 +16,32 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Password is required'],
     minlength: [10, 'Password must be at least 10 characters long'],
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+    select: false, // Hides this field from default query results
+  },
+  resetPasswordToken: {
+    type: String,
+    select: false,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    select: false,
+  },
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
-  const salt = await bcrypt.genSalt(process.env.BCRYPT_SALT_ROUNDS || 10);
+  const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
+  const salt = await bcrypt.genSalt(saltRounds);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });

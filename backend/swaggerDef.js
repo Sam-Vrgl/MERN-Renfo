@@ -1,7 +1,5 @@
-// This file exports the Swagger/OpenAPI specification object.
-
 const swaggerDefinition = {
-  openapi: '3.1.0',
+  openapi: '3.0.0',
   info: {
     title: 'Contact Manager API',
     version: '1.0.0',
@@ -31,8 +29,19 @@ const swaggerDefinition = {
         properties: {
           email: { type: 'string', format: 'email' },
           password: { type: 'string', minLength: 10 },
+          role: { type: 'string', enum: ['user', 'admin'], readOnly: true },
         },
         required: ['email', 'password'],
+      },
+      Address: {
+        type: 'object',
+        properties: {
+            street: { type: 'string', example: '123 Main St' },
+            city: { type: 'string', example: 'Anytown' },
+            state: { type: 'string', example: 'CA' },
+            zipCode: { type: 'string', example: '12345' },
+            country: { type: 'string', example: 'USA' },
+        }
       },
       Contact: {
         type: 'object',
@@ -43,7 +52,7 @@ const swaggerDefinition = {
           lastName: { type: 'string' },
           phone: { type: 'string' },
           email: { type: 'string', format: 'email' },
-          address: { type: 'string' },
+          address: { $ref: '#/components/schemas/Address' },
         },
         required: ['firstName', 'lastName', 'phone'],
       },
@@ -54,7 +63,7 @@ const swaggerDefinition = {
           lastName: { type: 'string', example: 'Doe' },
           phone: { type: 'string', example: '+1234567890' },
           email: { type: 'string', format: 'email', example: 'jane.doe@example.com' },
-          address: { type: 'string', example: '123 Main St' },
+          address: { $ref: '#/components/schemas/Address' },
         },
         required: ['firstName', 'lastName', 'phone'],
       },
@@ -99,7 +108,11 @@ const swaggerDefinition = {
               'application/json': {
                 schema: {
                   type: 'object',
-                  properties: { token: { type: 'string' }, userId: { type: 'string' } },
+                  properties: { 
+                      token: { type: 'string' }, 
+                      userId: { type: 'string' },
+                      role: { type: 'string' },
+                   },
                 },
               },
             },

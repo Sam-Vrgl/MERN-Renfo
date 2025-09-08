@@ -6,7 +6,7 @@ const contactSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    index: true, // Index for efficient queries by user
+    index: true,
   },
   firstName: {
     type: String,
@@ -32,9 +32,16 @@ const contactSchema = new mongoose.Schema({
     match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address.'],
   },
   address: {
-    type: String,
-    required: false,
-    trim: true,
+    street: { type: String, trim: true },
+    city: { type: String, trim: true },
+    state: { type: String, trim: true },
+    zipCode: { type: String, trim: true },
+    country: { type: String, trim: true },
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+    select: false,
   },
 }, { timestamps: true });
 

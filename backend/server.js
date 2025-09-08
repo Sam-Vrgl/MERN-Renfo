@@ -9,6 +9,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerDefinition = require('./swaggerDef');
 
 dotenv.config();
+const PORT = process.env.PORT || 5000;
 
 const authRoutes = require('./routes/authRoutes');
 const contactRoutes = require('./routes/contactRoutes');
@@ -20,6 +21,12 @@ const app = express();
 const allowedOrigins = [
   process.env.CORS_ORIGIN,
 ];
+if (process.env.NODE_ENV === 'development') {
+    const selfOrigin = `http://localhost:${PORT}`;
+    if (!allowedOrigins.includes(selfOrigin)) {
+        allowedOrigins.push(selfOrigin);
+    }
+}
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -53,5 +60,5 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

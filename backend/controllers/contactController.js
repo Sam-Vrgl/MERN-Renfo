@@ -24,7 +24,7 @@ exports.createContact = async (req, res) => {
 // @route   GET /api/v1/contacts
 exports.getContacts = async (req, res) => {
   try {
-    const contacts = await Contact.find({ user: req.user.id }).sort({ createdAt: -1 });
+    const contacts = await Contact.find({ user: req.user.id, isDeleted: false }).sort({ createdAt: -1 });
     res.status(200).json(contacts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -35,7 +35,8 @@ exports.getContacts = async (req, res) => {
 // @route   PATCH /api/v1/contacts/:id
 exports.updateContact = async (req, res) => {
   try {
-    const contact = await Contact.findById(req.params.id);
+    // Find a contact that is not soft-deleted
+    const contact = await Contact.findOne({ _id: req.params.id, isDeleted: false });
 
     if (!contact) {
       return res.status(404).json({ message: 'Contact not found' });
@@ -55,11 +56,11 @@ exports.updateContact = async (req, res) => {
   }
 };
 
-// @desc    Delete a contact
+// @desc    Delete a contact (soft delete)
 // @route   DELETE /api/v1/contacts/:id
 exports.deleteContact = async (req, res) => {
   try {
-    const contact = await Contact.findById(req.params.id);
+    const contact = await Contact.findOne({ _id: req.params.id, isDeleted: false });
 
     if (!contact) {
       return res.status(404).json({ message: 'Contact not found' });
@@ -68,8 +69,9 @@ exports.deleteContact = async (req, res) => {
     if (contact.user.toString() !== req.user.id) {
       return res.status(403).json({ message: 'User not authorized to delete this contact' });
     }
-
-    await contact.remove();
+    
+    await Contact.findByIdAndUpdate(req.params.id, { isDeleted: true });
+    
     res.status(200).json({ message: 'Contact deleted successfully.' });
   } catch (error) {
     res.status(500).json({ message: error.message });
