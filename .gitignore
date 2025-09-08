@@ -1,0 +1,5 @@
+temp
+node_modules
+.env
+/deploy/mongo/data
+/deploy/mongo/backups
