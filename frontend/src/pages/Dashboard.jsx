@@ -5,13 +5,14 @@ import ContactCard from '../components/ContactCard';
 import ContactForm from '../components/ContactForm';
 
 const styles = {
-  container: { padding: '2rem', fontFamily: 'Arial, sans-serif' },
+  container: { padding: '2rem' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', marginBottom: '1rem' },
   actionsContainer: { display: 'flex', gap: '1rem' },
-  button: { padding: '0.7rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' },
-  addButton: { backgroundColor: '#28a745', color: 'white' },
-  logoutButton: { backgroundColor: '#dc3545', color: 'white' },
+  button: { padding: '0.7rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer', color: '#FFFFFF' },
+  addButton: { backgroundColor: 'var(--color-success)' },
+  logoutButton: { backgroundColor: 'var(--color-error)' },
   contactList: { marginTop: '2rem' },
+  errorText: { color: 'var(--color-error)' }
 };
 
 const Dashboard = () => {
@@ -20,7 +21,6 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // State for form modal and editing logic
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentContactToEdit, setCurrentContactToEdit] = useState(null);
 
@@ -39,8 +39,6 @@ const Dashboard = () => {
       setIsLoading(false);
     }
   };
-
-  // --- CRUD Handlers ---
 
   const handleAddNewClick = () => {
     setCurrentContactToEdit(null);
@@ -67,11 +65,9 @@ const Dashboard = () => {
   const handleFormSubmit = async (formData, contactId) => {
     try {
       if (contactId) {
-        // Update logic
         const response = await apiService.patch(`/contacts/${contactId}`, formData);
         setContacts(contacts.map((c) => (c._id === contactId ? response.data : c)));
       } else {
-        // Create logic
         const response = await apiService.post('/contacts', formData);
         setContacts([response.data, ...contacts]);
       }
@@ -91,9 +87,8 @@ const Dashboard = () => {
           <button onClick={logoutAction} style={{...styles.button, ...styles.logoutButton}}>Logout</button>
         </div>
       </header>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={styles.errorText}>{error}</p>}
 
-      {/* Render Contact Form Modal */}
       {isModalOpen && (
         <ContactForm
           existingContact={currentContactToEdit}
@@ -102,7 +97,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Render Contact List */}
       <div style={styles.contactList}>
         {isLoading && <p>Loading contacts...</p>}
         {!isLoading && contacts.length === 0 && <p>You haven't added any contacts yet.</p>}

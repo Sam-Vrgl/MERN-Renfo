@@ -3,14 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import apiService from '../api/apiService';
 
-// Basic styling for the form container
 const styles = {
-  container: { display: 'flex', flexDirection: 'column', width: '300px', margin: '5rem auto', padding: '2rem', border: '1px solid #ccc', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' },
+  container: { display: 'flex', flexDirection: 'column', width: '300px', margin: '5rem auto', padding: '2rem', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: 'var(--shadow-md)', backgroundColor: 'var(--color-surface)' },
   form: { display: 'flex', flexDirection: 'column', gap: '1rem' },
-  input: { padding: '0.5rem', fontSize: '1rem', border: '1px solid #ddd', borderRadius: '4px' },
-  button: { padding: '0.7rem', fontSize: '1rem', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' },
-  toggleButton: { background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', marginTop: '1rem', textAlign: 'center' },
-  error: { color: 'red', fontSize: '0.9rem', textAlign: 'center' }
+  input: { padding: '0.5rem', fontSize: '1rem', border: '1px solid var(--color-border)', borderRadius: '4px', backgroundColor: 'var(--color-background)', color: 'var(--color-text)' },
+  button: { padding: '0.7rem', fontSize: '1rem', backgroundColor: 'var(--color-primary)', color: '#FFFFFF', border: 'none', borderRadius: '4px', cursor: 'pointer' },
+  toggleButton: { background: 'none', border: 'none', color: 'var(--color-primary)', cursor: 'pointer', marginTop: '1rem', textAlign: 'center' },
+  error: { color: 'var(--color-error)', fontSize: '0.9rem', textAlign: 'center' }
 };
 
 const LoginPage = () => {
@@ -35,10 +34,9 @@ const LoginPage = () => {
       const response = await apiService.post(endpoint, credentials);
 
       if (isLoginMode) {
-        loginAction(response.data); // Save token and user info from login response
+        loginAction(response.data);
         navigate('/dashboard');
       } else {
-        // Automatically switch to login mode after successful registration
         setIsLoginMode(true);
         alert('Registration successful! Please log in.');
       }
@@ -68,7 +66,7 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          minLength={10} // Enforce minimum length based on User schema
+          minLength={10}
           style={styles.input}
         />
         <button type="submit" disabled={isLoading} style={styles.button}>
