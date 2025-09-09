@@ -85,6 +85,7 @@ const ContactForm = ({ existingContact, onSubmitSuccess, onCancel }) => {
   };
 
   return (
+
     <div style={styles.modalOverlay}>
       <div style={styles.modalContent}>
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -93,6 +94,12 @@ const ContactForm = ({ existingContact, onSubmitSuccess, onCancel }) => {
           <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required style={styles.input} />
 
           <div>
+            <style>{`
+             .PhoneInputInput {
+              border: none !important;
+              outline: none !important;
+            }`}
+            </style>
             <div style={{ ...styles.phoneInputWrapper, ...(errors.phone && styles.phoneInputError) }}>
               <PhoneInput
                 placeholder="Enter phone number"
@@ -114,7 +121,7 @@ const ContactForm = ({ existingContact, onSubmitSuccess, onCancel }) => {
           <input type="text" name="zipCode" placeholder="Zip Code" value={formData.address.zipCode} onChange={handleAddressChange} style={styles.input} />
 
           <div style={styles.buttonContainer}>
-            <button type="button" onClick={onCancel} style={{ ...styles.button, ...styles.cancelButton }}>Cancel</button>g
+            <button type="button" onClick={onCancel} style={{ ...styles.button, ...styles.cancelButton }}>Cancel</button>
             <button type="submit" style={{ ...styles.button, ...styles.submitButton }}>Save Contact</button>
           </div>
         </form>
